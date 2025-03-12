@@ -6,7 +6,7 @@
 using namespace std;
 int main()
 {
-    cout << "Hello World" << endl;
+    cout << "Why are you interested in reading this text?" << endl;
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
