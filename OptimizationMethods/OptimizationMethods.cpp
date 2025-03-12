@@ -50,12 +50,10 @@ void SwennAlgorithm(double x0, double* interval, double t)
         {
             b = xk;
         }
-        else 
+        else
         {
             a = xk;
         }
-        cout << a << endl;
-        cout << b << endl;
         xk = xk1;
         xk1 = xk + pow(2, k) * delta;
         k = k + 1;
@@ -63,17 +61,44 @@ void SwennAlgorithm(double x0, double* interval, double t)
     if (delta == -t) 
     {
         interval[0] = xk1;
-        interval[1] = b;
+        interval[1] = xk;
     }
     else
     {
-        interval[0] = a;
+        interval[0] = xk;
         interval[1] = xk1;
     }
 
 }
 
-
+double TheGoldenRatio(double* interval, double l)
+{
+    double ak = interval[0];
+    double bk = interval[1];
+    double yk = ak + (3 - sqrt(5)) * (bk - ak) / 2;
+    double zk = ak + bk - yk;
+    for (int i = 0; fabs(bk - ak) > l; i++)
+    {
+        double f1 = f(yk);
+        double f2 = f(zk);
+        if (f1 <= f2)
+        {
+            bk = zk;
+            double tmp = yk;
+            yk = ak + bk - tmp;
+            zk = tmp;
+        }
+        else
+        {
+            ak = yk;
+            double tmp = zk;
+            zk = ak + bk - tmp;
+            yk = tmp;
+        }
+    }
+    double x = (bk + ak) / 2;
+    return x;
+}
 
 int main()
 {
@@ -88,6 +113,14 @@ int main()
     double* interval = new double[2];
     SwennAlgorithm(x0, interval, t);
     cout << "Initial uncertainty interval - [" << interval[0] << ";" << interval[1] << "]" << endl;
+
+    double l;
+    cout << "Choose the accuracy: " << endl;
+    cin >> l;
+
+    double res = TheGoldenRatio(interval, l);
+    cout << "The minimum point found by the golden ratio algorithm - " << res << endl;
+    cout << "Minimum of function at this point - " << f(res) << endl;
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
