@@ -100,10 +100,123 @@ double TheGoldenRatio(double* interval, double l)
     return x;
 }
 
+double PowellMethod(double x1, double delta, double eps1, double eps2)
+{
+    double x2 = x1 + delta;
+    double f1 = f(x1);
+    double f2 = f(x2);
+    double x3;
+    double a;
+    double b;
+    if (f1 >= f2)
+    {
+        x3 = x2 + delta;
+        a = x1;
+        b = x3;
+    }
+    else
+    {
+        x3 = x1 - delta;
+        a = x3;
+        b = x2;
+    }
+    double f3 = f(x3);
+    double fmin = 0.0;
+    double xmin = 100.0;
+    double xp = 10.0;
+    for (int i = 0; (fabs((fmin - f(xp)) / f(xp)) > eps1) || (fabs((xmin - xp) / xp) > eps2); i++)
+    {
+        if (i != 0)
+        {
+            if ((xp < a) || (xp > b))
+            {
+                if (xp > 0)
+                {
+                    return 10000.0 + xp;
+                }
+                else
+                {
+                    return 10000.0 - xp;
+                }
+            }
+            if (fmin <= f(xp))
+            {
+                x2 = xmin;
+                f2 = fmin;
+                if (xmin < xp)
+                {
+                    x1 = a;
+                    x3 = min(xp, b);
+                }
+                else
+                {
+                    x1 = max(a, xp);
+                    x3 = b;
+                }
+            }
+            else
+            {
+
+                x2 = xp;
+                f2 = f(xp);
+                if (xmin > xp)
+                {
+                    x1 = a;
+                    x3 = min(xmin, b);
+                }
+                else
+                {
+                    x1 = max(a, xmin);
+                    x3 = b;
+                }
+            }
+        }
+        double fmin0 = min(f1, f2);
+        fmin = min(fmin0, f3);
+        if (f(x1) == fmin)
+        {
+            xmin = x1;
+        }
+        else if (f(x2) == fmin)
+        {
+            xmin = x2;
+        }
+        else
+        {
+            xmin = x3;
+        }
+        xp = ((pow(x2, 2) - pow(x3, 2)) * f1 + (pow(x3, 2) - pow(x1, 2)) * f2 + (pow(x1, 2) + pow(x2, 2)) * f3) / ((x2 - x3) * f1 + (x3 - x1) * f2 + (x1 - x2) * f3);
+        if (xp == 0)
+        {
+            if (xmin > 0)
+            {
+                return 10000.0 + xmin;
+            }
+            else
+            {
+                return 10000.0 - xmin;
+            }
+        }
+    }
+    return xp;
+}
+
+double control(double x1, double delta, double eps1, double eps2)
+{
+    double cont = PowellMethod(x1, delta, eps1, eps2);
+    double x_fixed;
+    while (cont > 10000.0)
+    {
+        x_fixed = cont - 10000.0;
+        cont = PowellMethod(x_fixed, delta, eps1, eps2);
+    }
+    return cont;
+}
+
 int main()
 {
-    double x0;
-    cout << "Select the value of the initial point x0: " << endl;
+    /*double x0;
+    cout << "Select the value of the initial point: " << endl;
     cin >> x0;
 
     double t;
@@ -120,7 +233,25 @@ int main()
 
     double res = TheGoldenRatio(interval, l);
     cout << "The minimum point found by the golden ratio algorithm - " << res << endl;
-    cout << "Minimum of function at this point - " << f(res) << endl;
+    cout << "Minimum of function at this point - " << f(res) << endl;*/
+
+    double eps1;
+    double eps2;
+    cout << "Choose the accuracies: " << endl;
+    cin >> eps1;
+    cin >> eps2;
+
+    double delta;
+    cout << "Select the step size: " << endl;
+    cin >> delta;
+
+    double x1;
+    cout << "Select the value of the initial point: " << endl;
+    cin >> x1;
+
+    double itog = control(x1, delta, eps1, eps2);
+    cout << "The minimum point found by the Powell method - " << itog << endl;
+    cout << "Minimum of function at this point - " << f(itog) << endl;
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
