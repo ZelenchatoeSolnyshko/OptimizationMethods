@@ -163,10 +163,12 @@ double PowellMethod(double x1, double delta, double eps1, double eps2)
                 {
                     x1 = a;
                     x3 = min(xmin, b);
+                    b = x3;
                 }
                 else
                 {
                     x1 = max(a, xmin);
+                    a = x1;
                     x3 = b;
                 }
             }
@@ -215,43 +217,56 @@ double control(double x1, double delta, double eps1, double eps2)
 
 int main()
 {
-    /*double x0;
-    cout << "Select the value of the initial point: " << endl;
-    cin >> x0;
+    cout << "Real value of the minimum point - 0" << endl << "Minimum of function at this point - 0" << endl;
 
-    double t;
-    cout << "Select the step size: " << endl;
-    cin >> t;
+    int z;
+    cout << "Choose which method you want to use: Golden ratio (with Swenn's Algorithm) - 1; Powell's method - 2" << endl;
+    cin >> z;
 
-    double* interval = new double[2];
-    SwennAlgorithm(x0, interval, t);
-    cout << "Initial uncertainty interval - [" << interval[0] << ";" << interval[1] << "]" << endl;
+    if (z == 1)
+    {
+        double x0;
+        cout << "Select the value of the initial point: " << endl;
+        cin >> x0;
 
-    double l;
-    cout << "Choose the accuracy: " << endl;
-    cin >> l;
+        double t;
+        cout << "Select the step size: " << endl;
+        cin >> t;
 
-    double res = TheGoldenRatio(interval, l);
-    cout << "The minimum point found by the golden ratio algorithm - " << res << endl;
-    cout << "Minimum of function at this point - " << f(res) << endl;*/
+        double* interval = new double[2];
+        SwennAlgorithm(x0, interval, t);
+        cout << "Initial uncertainty interval - [" << interval[0] << ";" << interval[1] << "]" << endl;
 
-    double eps1;
-    double eps2;
-    cout << "Choose the accuracies: " << endl;
-    cin >> eps1;
-    cin >> eps2;
+        double l;
+        cout << "Choose the accuracy: " << endl;
+        cin >> l;
 
-    double delta;
-    cout << "Select the step size: " << endl;
-    cin >> delta;
+        double res = TheGoldenRatio(interval, l);
+        cout << "The minimum point found by the golden ratio algorithm - " << res << endl;
+        cout << "Minimum of function at this point - " << f(res) << endl;
+    }
+    else
+    {
+        double eps1;
+        double eps2;
+        cout << "Choose the accuracies: " << endl;
+        cin >> eps1;
+        cin >> eps2;
 
-    double x1;
-    cout << "Select the value of the initial point: " << endl;
-    cin >> x1;
+        double delta;
+        cout << "Select the step size: " << endl;
+        cin >> delta;
 
-    double itog = control(x1, delta, eps1, eps2);
-    cout << "The minimum point found by the Powell method - " << itog << endl;
-    cout << "Minimum of function at this point - " << f(itog) << endl;
+        double x1;
+        cout << "Select the value of the initial point: " << endl;
+        cin >> x1;
+
+        double itog = control(x1, delta, eps1, eps2);
+        cout << "The minimum point found by the Powell method - " << itog << endl;
+        cout << "Minimum of function at this point - " << f(itog) << endl;
+    }
+    /**/
+    
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
